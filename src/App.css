@@ -1,31 +1,161 @@
+/* @import url('https://fonts.google.com/specimen/Poppins'); */
+
 .App {
+  text-align: center;
+  /* font-family: Poppins; */
+}
+
+
+.search-area {
+  display: flex;
+  margin-top: 30px;
+  padding: 20px;
+  width: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.title-search {
+  text-align: left;
+  line-height: 5px;
+  margin-right: auto;
+}
+
+.input-area {
+  border-radius: 3px;
+  border: none;
+  background-color: #f0f0f0;
+  width: 300px;
+  height: 20px;
+  padding: 10px;
+  font-size: 17px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.day-options {
+  margin-top: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.select-button {
+  margin-right: 20px;
+  width: 100px;
+  background-color: #5b6f8b;
+  padding: 10px;
+  border: none;
+  color: white;
+  border-radius: 25px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.selected-day {
+  background-color: #203756;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #ffffff;
+  gap: 20px;
+}
+
+.weather-lists-wrap {
+  /* margin-left: 50px; */
+  display: flex;
+  /* flex-wrap: wrap; */
+  flex-direction: column;
+  /* width: 50%; */
+}
+
+.weather-lists {
+  width: 130vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-align: center;
+  padding: 20px 5px;
+  margin-top: 20px;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+  border-radius: 10px;
+  background-color:#f0f0f0;
 }
 
-.App-link {
-  color: #61dafb;
+.condition-list {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 5px;
+  gap: 10px;
+}
+
+.condition-details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 50vh;
+  padding: 10px 30px;
+  /* height: 20vh; */
+  gap: 30px;
+  background-color: #fafafa;
+  border-radius: 5px;
+}
+
+.details-wrapper {
+  text-align: left;
+}
+
+.weather-icon {
+  /* display: flex; */
+  width: 10vh;
+  /* margin-right: auto; */
+}
+
+/* right side */
+.other-info {
+  /* margin-top: 30px; */
+  width: 50vh;
+  height: 94vh;
+  padding: 3vh 20px;
+  border-radius: 10px;
+  background-color:#203756;
+  color: white;
+  text-align: left;
+}
+
+.other-info-title {
+  display: flex;
+}
+
+.location-title{
+  /* background-color: white; */
+  line-height: 5px;
+  margin-right: auto;
+}
+
+.current-weather {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.current-weather-image {
+  width: 40px;
+  margin-right: auto;
+}
+
+.overview-list {
+  display: flex;
+  font-size: 14px;
+  background-color: #5b6f8b;
+  margin-top: 20px;
+  padding: 0 20px;
+  border-radius: 5px;
+}
+
+.overview-list-title {
+  margin-right: auto;
 }
 
 @keyframes App-logo-spin {
