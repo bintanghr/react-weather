@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getWeatherInfo } from "../api";
+import { fetchWeatherData } from "../api";
 
 const weatherConditions = {
   0: "Cerah / Clear Skies",
@@ -25,13 +25,15 @@ const Home = () => {
   const [currentArea, setCurrentArea] = useState('')
 
   useEffect(() => {
-    getWeatherInfo().then((result) => {
+    // getWeatherInfo().then((result) => {
+    fetchWeatherData().then((result) => {
+      // console.log(result)
       setWeatherInfo(result);
-      // setSelectedArea(result);
       navigator.geolocation.getCurrentPosition(success, error);
     })
 
     // untuk clear up function
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   useEffect(() => {
@@ -46,8 +48,8 @@ const Home = () => {
       const response = await fetch(url);
       const data = await response.json();
       const cityName = data.address.county || data.address.city;
-      console.log("Nama Kabupaten/Kota: ", cityName);
-      console.log(cityName);
+      // console.log("Nama Kabupaten/Kota: ", cityName);
+      // console.log(cityName);
       setCurrentArea(cityName);
       // console.log(selectedArea[0]);
     } catch (error) {
@@ -78,7 +80,7 @@ const Home = () => {
   function searchByLetters(array, query) {
     // Membuat RegExp, 'i' berarti case-insensitive
     const regex = new RegExp(query.split('').join('.*'), 'i');
-    console.log({query : query})
+    // console.log({query : query})
     // console.log({array : array})
   
     // Filter array berdasarkan regex
@@ -87,10 +89,15 @@ const Home = () => {
 
   const DayOptions = () => {
     return (
-      <div className="day-options">
-        <button className={selectedDay === 'today' ? 'select-button selected-day' : 'select-button'} onClick={() => setSelectedDay('today')}>Today</button>
-        <button className={selectedDay === 'tomorrow' ? 'select-button selected-day' : 'select-button'} onClick={() => setSelectedDay('tomorrow')}>Tomorroow</button>
-        <button className={selectedDay === 'besoknya' ? 'select-button selected-day' : 'select-button'} onClick={() => setSelectedDay('besoknya')}>H + 2</button>
+      <div className="day-options-wrap">
+        <div className="chance-of-rain">
+          <h3>Chance of Rain</h3>
+        </div>
+        <div className="day-options">
+          <button className={selectedDay === 'today' ? 'select-button selected-day' : 'select-button'} onClick={() => setSelectedDay('today')}>Today</button>
+          <button className={selectedDay === 'tomorrow' ? 'select-button selected-day' : 'select-button'} onClick={() => setSelectedDay('tomorrow')}>Tomorroow</button>
+          <button className={selectedDay === 'besoknya' ? 'select-button selected-day' : 'select-button'} onClick={() => setSelectedDay('besoknya')}>H + 2</button>
+        </div>
       </div>
     )
   }
@@ -169,7 +176,6 @@ const Home = () => {
           <DayOptions />
           <WeatherLists />
         </div>
-        {/* <OtherInfo weatherList={weatherInfo[29]} /> */}
         <OtherInfo weatherList={selectedArea[0]} />
       </div>
     </>
@@ -206,37 +212,57 @@ const OtherInfo = ({ weatherList }) => {
   return (
     <>
       <div className="other-info">
-        <div className="other-info-title">
-          <div className="location-title">
-            <h3>{weatherList?.description}</h3>
-            <p>{weatherList?.domain}, Indonesia</p>
-          </div>
-          <p>{now.getHours()}:{now.getMinutes()}</p>
-        </div>
-        <hr></hr>
-        <div className="current-weather">
-          <img src={"../images/" + weatherList?.parameter[6].timerange[findCurrentRange()].value[0]['text'] + ".png"} alt="current-weather" className="current-weather-image"></img>
-          <p>{weatherConditions[weatherList?.parameter[6].timerange[findCurrentRange()].value[0]['text']]}</p>
-          {console.log(weatherConditions[weatherList?.parameter[6].timerange[findCurrentRange()].value[0]['text']])}
-        </div>
-
-        <div className="overview">
-          <p>Overview</p>
-          {console.log(weatherList)}
-          {
-            weatherList?.parameter.map((overview, i) => (
-              overview.timerange[0]['type'] === 'hourly' &&
-              overview.description !== 'Weather' && (
-                <div className="overview-list" key={i}>
-                  <p className="overview-list-title">{overview.description}</p>
-                  <p>{overview?.timerange[findCurrentRange()]?.value[0]['text']} {overview?.timerange[findCurrentRange()]?.value[0]['unit']}</p>
-                </div>
-              )
-            ))
-          }
-        </div>
+        <OtherInfoTitle weatherList={weatherList} onFindCurrentRange={findCurrentRange} now={now} />
+        <Overview weatherList={weatherList} onFindCurrentRange={findCurrentRange} />
       </div>
     </>
+  )
+}
+
+const OtherInfoTitle = ({ weatherList, onFindCurrentRange, now }) => {
+  return (
+    <>
+    <div className="other-info-title">
+      <div className="location-title">
+        <h3>{weatherList?.description}</h3>
+        <p>{weatherList?.domain}, Indonesia</p>
+      </div>
+      <p>{now.getHours()}:{now.getMinutes()}</p>
+    </div>
+    <hr></hr>
+    <div className="current-weather">
+      <img src={"../images/" + weatherList?.parameter[6]?.timerange[onFindCurrentRange()]?.value[0]['text'] + ".png"} alt="current-weather" className="current-weather-image"></img>
+      <p>{weatherConditions[weatherList?.parameter[6]?.timerange[onFindCurrentRange()]?.value[0]['text']]}</p>
+      {/* {console.log(weatherConditions[weatherList?.parameter[6].timerange[findCurrentRange()].value[0]['text']])} */}
+    </div>
+    </>
+  )
+}
+
+const Overview = ({ weatherList, onFindCurrentRange }) => {
+  return (
+    <div className="overview">
+      <p>Overview</p>
+      {
+        weatherList?.parameter?.map((overview, i) => (
+          overview.timerange[0]['type'] === 'hourly' &&
+          overview.description !== 'Weather' && (
+            <div className="overview-list" key={i}>
+              <p className="overview-list-title">{overview.description}</p>
+              <p>{overview?.timerange[onFindCurrentRange()]?.value[0]['text']} {overview?.timerange[onFindCurrentRange()]?.value[0]['unit']}</p>
+            </div>
+          )
+        ))
+      }
+      <div className="overview-list">
+        <p className="overview-list-title">{weatherList?.parameter[2]?.description}</p>
+        <p>{weatherList?.parameter[2]?.timerange[0]?.value[0]['text']} {weatherList?.parameter[2]?.timerange[0]?.value[0]['unit']}</p>
+      </div>
+      <div className="overview-list">
+        <p className="overview-list-title">{weatherList?.parameter[4]?.description}</p>
+        <p>{weatherList?.parameter[4]?.timerange[0]?.value[0]['text']} {weatherList?.parameter[2]?.timerange[0]?.value[0]['unit']}</p>
+      </div>
+    </div>
   )
 }
 
@@ -280,8 +306,7 @@ const SearchArea = ({searchRegion}) => {
         id="search-location"
         ></input>
     </div>
-    <hr></hr>
-    <h3>Chance of Rain</h3>
+    <hr className="horizontal-rule"></hr>
     </>
   )
 }
